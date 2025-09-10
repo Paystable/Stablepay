@@ -1,7 +1,7 @@
 {
   "name": "stablepay-platform",
   "version": "1.0.0",
-  "description": "StablePay - FIU-IND Regulated DeFi Platform for Zero-Margin Remittance and High-Yield USDC Vault",
+  "description": "StablePay - FIU(Financial Intelligence Unit)-India Registered DeFi Platform for Zero-Margin Remittance and High-Yield USDC Vault",
   "type": "module",
   "license": "MIT",
   "scripts": {

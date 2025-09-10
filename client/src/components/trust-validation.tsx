@@ -85,7 +85,7 @@ export default function TrustValidation() {
     {
       id: 'compliance',
       title: 'Regulatory Compliance',
-      description: 'FIU-IND registered, FEMA compliant',
+      description: 'FIU(Financial Intelligence Unit)-India Registered, FEMA compliant',
       status: 'completed',
       link: null
     },
@@ -207,7 +207,7 @@ export default function TrustValidation() {
                   variant={trustMetrics.complianceStatus === 'verified' ? 'default' : 'secondary'}
                   className="mt-1"
                 >
-                  {trustMetrics.complianceStatus === 'verified' ? 'FIU-IND Verified' : 'Pending'}
+                  {trustMetrics.complianceStatus === 'verified' ? 'FIU(Financial Intelligence Unit)-India Registered Verified' : 'Pending'}
                 </Badge>
               </div>
             </div>

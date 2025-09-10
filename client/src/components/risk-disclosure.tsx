@@ -58,7 +58,7 @@ export default function RiskDisclosure({ onAccept, children }: RiskDisclosurePro
       icon: Building2,
       description: 'Cryptocurrency regulations may change affecting the platform.',
       details: [
-        'Currently FIU-IND registered and FEMA compliant',
+        'Currently FIU(Financial Intelligence Unit)-India Registered and FEMA compliant',
         'Active monitoring of regulatory changes',
         'Legal compliance team in place',
         'May need to modify services based on new regulations'
@@ -174,7 +174,7 @@ export default function RiskDisclosure({ onAccept, children }: RiskDisclosurePro
                 <Badge variant="outline" className="border-green-500 text-green-700">
                   ✓ Compliant
                 </Badge>
-                <span className="text-sm">FIU-IND Registered</span>
+                <span className="text-sm">FIU(Financial Intelligence Unit)-India Registered</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Badge variant="outline" className="border-green-500 text-green-700">

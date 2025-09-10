@@ -100,7 +100,7 @@ export default function Investors() {
     {
       title: "Regulatory Risk", 
       description: "Changes in crypto regulations could impact operations",
-      mitigation: "FIU-IND registered with proactive regulatory compliance"
+      mitigation: "FIU(Financial Intelligence Unit)-India Registered with proactive regulatory compliance"
     },
     {
       title: "Technology Risk",
@@ -196,7 +196,7 @@ export default function Investors() {
                       <div>
                         <h3 className="text-xl font-bold text-black mb-2 no-blur">Regulatory Compliance</h3>
                         <p className="brand-text no-blur">
-                          FIU-IND registered with full AML/KYC compliance. Transparent operations 
+                          FIU(Financial Intelligence Unit)-India Registered with full AML/KYC compliance. Transparent operations 
                           with institutional-grade reporting and audit trails.
                         </p>
                       </div>
@@ -523,7 +523,7 @@ export default function Investors() {
                         </div>
                         <div className="flex items-center gap-2">
                           <FileText className="w-4 h-4 text-green-600" />
-                          <span className="brand-text no-blur">FIU-IND compliance reporting</span>
+                          <span className="brand-text no-blur">FIU(Financial Intelligence Unit)-India Registered compliance reporting</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Award className="w-4 h-4 text-green-600" />

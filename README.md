@@ -1,6 +1,6 @@
 # StablePay Platform
 
-**FIU-IND Regulated DeFi Platform for Zero-Margin Remittance and High-Yield USDC Vault**
+**FIU(Financial Intelligence Unit)-India Registered DeFi Platform for Zero-Margin Remittance and High-Yield USDC Vault**
 
 StablePay is a sophisticated DeFi platform that combines zero-margin remittance services for the Indian diaspora with a high-yield USDC vault offering up to 14% APY through arbitrage strategies. The platform includes comprehensive KYC/AML compliance and Travel Rule compliance for international transfers.
 
@@ -13,7 +13,7 @@ StablePay is a sophisticated DeFi platform that combines zero-margin remittance 
 - **Multi-Chain Support**: Base, Ethereum, and Polygon networks
 
 ### Compliance & Security
-- **FIU-IND Regulated**: Full regulatory compliance
+- **FIU(Financial Intelligence Unit)-India Registered**: Full regulatory compliance
 - **Comprehensive KYC**: Multiple verification providers (Cashfree, SurePass)
 - **Travel Rule Compliance**: International transfer regulations
 - **AML Monitoring**: Real-time transaction monitoring

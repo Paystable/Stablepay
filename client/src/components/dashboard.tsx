@@ -516,7 +516,7 @@ export default function Dashboard() {
                   <div className="w-1 h-1 bg-[#6667AB]/40 rounded-full"></div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>FIU-IND Compliant</span>
+                    <span>FIU(Financial Intelligence Unit)-India Registered Compliant</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm text-[#6667AB]">
@@ -953,7 +953,7 @@ export default function Dashboard() {
             <div className="text-center pt-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#6667AB]/5 rounded-full">
                 <Shield className="w-4 h-4 text-[#6667AB]" />
-                <span className="text-sm text-[#6667AB] font-medium">FIU-IND Regulated • FEMA Compliant</span>
+                <span className="text-sm text-[#6667AB] font-medium">FIU(Financial Intelligence Unit)-India Registered • FEMA Compliant</span>
               </div>
             </div>
           </TabsContent>
