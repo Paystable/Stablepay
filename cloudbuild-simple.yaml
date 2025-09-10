@@ -27,8 +27,7 @@ steps:
       '--min-instances', '1',
       '--concurrency', '100',
       '--timeout', '300',
-      '--set-env-vars', 'NODE_ENV=production',
-      '--set-env-vars', 'PORT=8080'
+      '--set-env-vars', 'NODE_ENV=production'
     ]
 
 # Store images in Google Container Registry
