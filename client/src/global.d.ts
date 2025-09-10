@@ -10,6 +10,9 @@ declare global {
 
 interface ImportMetaEnv {
   readonly VITE_COINBASE_APP_ID?: string;
+  readonly VITE_COINBASE_PROJECT_ID?: string;
+  readonly VITE_COINBASE_API_KEY?: string;
+  readonly VITE_PAYMASTER_URL?: string;
 }
 
 interface ImportMeta {

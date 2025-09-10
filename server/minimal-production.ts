@@ -56,7 +56,7 @@ app.get('/api/metrics', (req, res) => {
 });
 
 // Serve static files in production
-function serveStatic(app: Express) {
+function serveStatic(app: express.Application) {
   const distPath = path.resolve(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
