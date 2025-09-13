@@ -10,6 +10,8 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useToast } from "@/hooks/use-toast";
+import { submitEarlyAccess, type EarlyAccessSubmission } from "@/lib/early-access-api";
+import EarlyAccessWalletConnection from "@/components/early-access-wallet-connection";
 import { 
   Calculator, 
   TrendingUp, 
@@ -85,11 +87,34 @@ export default function EarlyAccess() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | undefined>();
   
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { toast } = useToast();
+
+  // Update wallet state when connection changes
+  useEffect(() => {
+    setWalletConnected(isConnected);
+    setWalletAddress(address);
+  }, [isConnected, address]);
+
+  // Wallet connection handlers
+  const handleWalletConnected = (address: string) => {
+    setWalletAddress(address);
+    setWalletConnected(true);
+    toast({
+      title: "🎉 Wallet Connected!",
+      description: "Your wallet is now connected and ready for early access submission.",
+    });
+  };
+
+  const handleWalletDisconnected = () => {
+    setWalletAddress(undefined);
+    setWalletConnected(false);
+  };
 
   // Service fee rates (percentage)
   const serviceFees: Record<string, number> = {
@@ -187,48 +212,34 @@ export default function EarlyAccess() {
       return;
     }
 
+    if (!walletConnected || !walletAddress) {
+      toast({
+        title: "Wallet Connection Required",
+        description: "Please connect your wallet to continue with early access registration.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      if (!isConnected) {
-        // Connect wallet first
-        const connector = connectors[0]; // Use first available connector (usually MetaMask)
-        await connect({ connector });
-        
-        // Wait a moment for connection to complete
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-
-      // Submit form data to MongoDB via API
-      const submissionData = {
+      // Submit form data to AWS API
+      const submissionData: EarlyAccessSubmission = {
         fullName: formData.fullName,
         email: formData.email,
         phoneNumber: formData.phoneNumber,
         formType: activeForm,
-        monthlyRemittance: formData.monthlyRemittance,
-        currentService: formData.currentService,
-        investmentAmount: formData.investmentAmount,
-        lockPeriod: formData.lockPeriod,
-        riskTolerance: formData.riskTolerance,
-        primaryGoal: formData.primaryGoal,
-        referralSource: formData.referralSource,
-        walletAddress: address,
-        calculations: calculations
+        walletAddress: walletAddress,
+        calculations: {
+          monthlyAmount: formData.monthlyRemittance,
+          totalSavings5Years: calculations.totalSavings5Years,
+          totalYield5Years: calculations.totalYield5Years,
+          apy: calculations.projectedYield
+        }
       };
 
-      const response = await fetch('/api/early-access/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to submit early access request');
-      }
+      const result = await submitEarlyAccess(submissionData);
 
       // Show success dialog with results
       setShowSuccessDialog(true);
@@ -240,9 +251,23 @@ export default function EarlyAccess() {
 
     } catch (error) {
       console.error('Submission error:', error);
+      
+      // Handle specific error cases
+      if (error instanceof Error) {
+        if (error.message.includes('Email already registered')) {
+          toast({
+            title: "Already Registered! 🎉",
+            description: "You're already on our early access list! We'll notify you when the platform launches.",
+            variant: "default",
+          });
+          setShowSuccessDialog(true);
+          return;
+        }
+      }
+      
       toast({
         title: "Submission Failed",
-        description: "Please try again or connect your wallet manually.",
+        description: "Please try again. If the issue persists, please contact support.",
         variant: "destructive",
       });
     } finally {
@@ -287,11 +312,11 @@ export default function EarlyAccess() {
               <Star className="w-5 h-5 mr-2" />
               Early Access Program
             </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-black mb-6 no-blur">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4 sm:mb-6 no-blur leading-tight">
               Join the{" "}
               <span className="brand-text">Remittance Revolution</span>
             </h1>
-            <p className="text-xl sm:text-2xl brand-text max-w-4xl mx-auto mb-8 no-blur">
+            <p className="text-lg sm:text-xl md:text-2xl brand-text max-w-4xl mx-auto mb-6 sm:mb-8 no-blur leading-relaxed">
               Be among the first to experience zero-fee remittances and up to 14% APY returns. 
               Join 1,000+ NRIs already saving thousands annually.
             </p>
@@ -304,12 +329,12 @@ export default function EarlyAccess() {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Form Tabs */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
             {formTabs.map((tab) => (
               <Button
                 key={tab.id}
                 variant={activeForm === tab.id ? "default" : "outline"}
-                className={`flex-1 h-auto p-6 ${
+                className={`flex-1 h-auto p-4 sm:p-6 ${
                   activeForm === tab.id
                     ? "bg-[#6667AB] text-white hover:bg-[#6667AB]/90"
                     : "border-2 border-[#6667AB] text-[#6667AB] hover:bg-[#6667AB]/10"
@@ -317,9 +342,9 @@ export default function EarlyAccess() {
                 onClick={() => setActiveForm(tab.id as any)}
               >
                 <div className="text-center">
-                  <tab.icon className="w-6 h-6 mx-auto mb-2" />
-                  <div className="font-semibold">{tab.label}</div>
-                  <div className="text-xs opacity-80 mt-1">{tab.description}</div>
+                  <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" />
+                  <div className="font-semibold text-sm sm:text-base">{tab.label}</div>
+                  <div className="text-xs opacity-80 mt-1 hidden sm:block">{tab.description}</div>
                 </div>
               </Button>
             ))}
@@ -327,28 +352,28 @@ export default function EarlyAccess() {
 
           {/* Form Content */}
           <Card className="brand-card">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center text-black no-blur flex items-center justify-center gap-3">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-xl sm:text-2xl text-center text-black no-blur flex items-center justify-center gap-2 sm:gap-3">
                 {activeForm === 'savings' && (
                   <>
-                    <Calculator className="w-8 h-8 text-green-600" />
-                    Calculate Your Remittance Savings
+                    <Calculator className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                    <span className="text-lg sm:text-2xl">Calculate Your Remittance Savings</span>
                   </>
                 )}
                 {activeForm === 'investment' && (
                   <>
-                    <TrendingUp className="w-8 h-8 text-blue-600" />
-                    Build Your Investment Profile
+                    <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+                    <span className="text-lg sm:text-2xl">Build Your Investment Profile</span>
                   </>
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-8">
+            <CardContent className="p-4 sm:p-6 lg:p-8">
+              <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                 {/* Savings Calculator Form */}
                 {activeForm === 'savings' && (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <div className="space-y-3">
                         <Label htmlFor="monthlyRemittance" className="text-black font-semibold flex items-center gap-2">
                           <DollarSign className="w-4 h-4" />
@@ -450,7 +475,7 @@ export default function EarlyAccess() {
                 {/* Investment Profile Form */}
                 {activeForm === 'investment' && (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <div className="space-y-3">
                         <Label htmlFor="investmentAmount" className="text-black font-semibold flex items-center gap-2">
                           <Coins className="w-4 h-4" />
@@ -494,7 +519,7 @@ export default function EarlyAccess() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <div className="space-y-3">
                         <Label htmlFor="riskTolerance" className="text-black font-semibold flex items-center gap-2">
                           <Shield className="w-4 h-4" />
@@ -681,41 +706,55 @@ export default function EarlyAccess() {
                   </Card>
                 )}
 
+                {/* Wallet Connection Section */}
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold text-black mb-2">
+                      Connect Your Wallet
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Connect your wallet to submit your early access request and create your account
+                    </p>
+                  </div>
+
+                  <EarlyAccessWalletConnection
+                    onWalletConnected={handleWalletConnected}
+                    onWalletDisconnected={handleWalletDisconnected}
+                    isSubmitting={isSubmitting}
+                    className="mb-6"
+                  />
+                </div>
+
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#6667AB] hover:bg-[#6667AB]/90 text-white font-semibold py-6 px-8 rounded-2xl text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || !walletConnected}
+                  className="w-full bg-[#6667AB] hover:bg-[#6667AB]/90 text-white font-semibold py-4 sm:py-6 px-4 sm:px-8 rounded-2xl text-lg sm:text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
-                      {isConnected ? "Submitting..." : "Connecting Wallet..."}
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 sm:mr-3"></div>
+                      <span className="text-sm sm:text-base">Submitting...</span>
                     </>
                   ) : (
                     <>
-                      <Star className="w-6 h-6 mr-3" />
-                      {isConnected ? "Submit Early Access Request" : "Connect Wallet & Get Early Access"}
-                      <ArrowRight className="w-6 h-6 ml-3" />
+                      <Star className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="text-sm sm:text-base leading-tight">
+                        {walletConnected ? (
+                          <>
+                            <span className="hidden sm:inline">Submit Early Access Request</span>
+                            <span className="sm:hidden">Submit Request</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="hidden sm:inline">Connect Wallet to Continue</span>
+                            <span className="sm:hidden">Connect Wallet</span>
+                          </>
+                        )}
+                      </span>
+                      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 sm:ml-3 flex-shrink-0" />
                     </>
                   )}
                 </Button>
-
-                {isConnected && (
-                  <div className="text-center">
-                    <div className="text-sm text-[#6667AB] mb-2">
-                      ✅ Wallet Connected: {address?.slice(0, 6)}...{address?.slice(-4)}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => disconnect()}
-                      className="text-[#6667AB] border-[#6667AB] hover:bg-[#6667AB]/10"
-                    >
-                      Disconnect Wallet
-                    </Button>
-                  </div>
-                )}
               </form>
             </CardContent>
           </Card>
@@ -803,7 +842,7 @@ export default function EarlyAccess() {
                     <div>
                       <div className="font-semibold text-green-800">Wallet Connected</div>
                       <div className="text-sm text-green-700">
-                        Address: {address?.slice(0, 8)}...{address?.slice(-6)}
+                        Address: {walletAddress?.slice(0, 8)}...{walletAddress?.slice(-6)}
                       </div>
                     </div>
                   </div>

@@ -1,6 +1,17 @@
 
-import { DatabaseService } from './database';
-import type { User, InsertUser } from "@shared/schema";
+// Simple in-memory storage implementation
+interface User {
+  id: number;
+  username: string;
+  address: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface InsertUser {
+  username: string;
+  address: string;
+}
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -9,28 +20,34 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
 }
 
-export class DatabaseStorage implements IStorage {
+// In-memory storage for users
+const users: User[] = [];
+let nextId = 1;
+
+export class MemoryStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return await DatabaseService.getUserById(id);
+    return users.find(user => user.id === id);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    // For now, we'll search by wallet address if username looks like an address
-    if (username.match(/^0x[a-fA-F0-9]{40}$/)) {
-      return await DatabaseService.getUserByAddress(username);
-    }
-    // TODO: Add proper username search when implementing user authentication
-    return undefined;
+    return users.find(user => user.username === username);
   }
 
   async getUserByAddress(address: string): Promise<User | undefined> {
-    return await DatabaseService.getUserByAddress(address);
+    return users.find(user => user.address.toLowerCase() === address.toLowerCase());
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    return await DatabaseService.createUser(insertUser);
+    const user: User = {
+      id: nextId++,
+      ...insertUser,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    users.push(user);
+    return user;
   }
 }
 
-// Use database storage instead of memory storage
-export const storage = new DatabaseStorage();
+// Use memory storage
+export const storage = new MemoryStorage();

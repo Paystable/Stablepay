@@ -1,5 +1,4 @@
 // Enhanced KYC Service with specific verification types
-import './env-config';
 import crypto from 'crypto';
 
 // ===== INTERFACES =====

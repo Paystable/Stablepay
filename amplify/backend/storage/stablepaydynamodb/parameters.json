@@ -1,0 +1,9 @@
+{
+  "storage": {
+    "stablepaydynamodb": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
+  }
+}

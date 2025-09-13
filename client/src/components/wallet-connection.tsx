@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import { useLocation } from 'wouter';
 import { useEffect, useState } from 'react';
-import TravelRuleCompliance from './travel-rule-compliance';
 
 export default function WalletConnection() {
   const { address, isConnected, isConnecting } = useAccount();
@@ -144,14 +143,7 @@ export default function WalletConnection() {
         )}
       </Button>
 
-      {/* Travel Rule Compliance Modal */}
-      {showTravelRuleCompliance && address && (
-        <TravelRuleCompliance
-          userAddress={address}
-          onComplete={handleTravelRuleComplete}
-          onSkip={handleTravelRuleSkip}
-        />
-      )}
+      {/* Travel Rule Compliance Modal - Component removed */}
     </>
   );
 }

@@ -12,19 +12,30 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
+      .catch((error) => {
+        console.log('Service worker install failed:', error);
+      })
   );
 });
 
 self.addEventListener('fetch', (event) => {
+  // Only handle same-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
-      }
-    )
+        return fetch(event.request).catch((error) => {
+          console.log('Fetch failed:', error);
+          // Return a fallback response for failed requests
+          return new Response('Network error', { status: 408 });
+        });
+      })
   );
 });
 

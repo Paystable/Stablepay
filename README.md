@@ -23,6 +23,7 @@ StablePay is a sophisticated DeFi platform that combines zero-margin remittance 
 - **Real-time Analytics**: Live performance monitoring
 - **Mobile-First UI**: Responsive design with PWA support
 - **Multi-Wallet Support**: Coinbase Wallet, MetaMask, WalletConnect
+- **Admin Dashboard**: Comprehensive data management for early access submissions
 
 ## 🏗️ Architecture
 
@@ -36,15 +37,45 @@ StablePay is a sophisticated DeFi platform that combines zero-margin remittance 
 ### Backend (Node.js + Express)
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: Google Cloud Firestore for early access data
 - **Blockchain**: Viem for Ethereum interactions
 - **KYC Services**: Cashfree and SurePass integration
+- **Admin Panel**: Real-time data management interface
 
 ### Smart Contracts (Solidity)
 - **Language**: Solidity ^0.8.19
 - **Security**: OpenZeppelin contracts
 - **Features**: ReentrancyGuard, Pausable, Ownable
 - **Network**: Base (primary), Ethereum, Polygon
+
+## 🔧 Admin Panel
+
+The platform includes a comprehensive admin panel for managing early access submissions:
+
+### Features
+- **Real-time Dashboard**: View submission statistics and metrics
+- **Data Management**: Search, filter, and manage submissions
+- **Export Functionality**: Download data as CSV
+- **Detailed Views**: Complete submission information
+- **Responsive Design**: Works on desktop and mobile
+
+### Access
+- Navigate to `/admin-early-access` to access the admin panel
+- No authentication required for development (add security for production)
+
+## 🗄️ Database Setup
+
+### Google Cloud Firestore
+The platform uses Google Cloud Firestore for storing early access submission data:
+
+1. **Setup**: Follow the [Firestore Setup Guide](./FIRESTORE-SETUP.md)
+2. **Configuration**: Copy `firestore-config.example` to `.env.firestore`
+3. **Fallback**: System automatically falls back to in-memory storage if Firestore is unavailable
+
+### Data Structure
+- **Collection**: `early_access_submissions`
+- **Fields**: Full name, email, phone, form type, calculations, timestamps
+- **Indexing**: Optimized for queries by email, form type, and date
 
 ## 📦 Installation
 

@@ -1,7 +1,34 @@
 import { Request, Response } from 'express';
-import { getMongoDB } from './mongodb.js';
-import { EarlyAccessFormSchema, type EarlyAccessRecord } from './early-access-schema.js';
 import { z } from 'zod';
+
+// Early Access Form Schema
+const EarlyAccessFormSchema = z.object({
+  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  phoneNumber: z.string().min(10, 'Phone number must be at least 10 digits'),
+  formType: z.enum(['savings', 'investment'], {
+    errorMap: () => ({ message: 'Form type must be either savings or investment' })
+  }),
+  walletAddress: z.string().optional(),
+  calculations: z.object({
+    monthlyAmount: z.number().min(0),
+    totalSavings5Years: z.number().min(0),
+    totalYield5Years: z.number().min(0),
+    apy: z.number().min(0)
+  }).optional(),
+  submittedAt: z.date(),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional()
+});
+
+type EarlyAccessRecord = z.infer<typeof EarlyAccessFormSchema> & {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+// In-memory storage for early access submissions
+const earlyAccessSubmissions: EarlyAccessRecord[] = [];
 
 // Create early access submission
 export async function createEarlyAccessSubmission(req: Request, res: Response) {
@@ -14,42 +41,32 @@ export async function createEarlyAccessSubmission(req: Request, res: Response) {
       userAgent: req.get('User-Agent'),
     });
 
-    // Get MongoDB connection
-    const db = await getMongoDB();
-    
-    if (!db) {
-      throw new Error('Database connection not available');
-    }
-
-    const collection = db.collection<EarlyAccessRecord>('early_access_submissions');
-
     // Check if email already exists
-    const existingSubmission = await collection.findOne({ 
-      email: validatedData.email 
-    });
-
+    const existingSubmission = earlyAccessSubmissions.find(sub => sub.email === validatedData.email);
+    
     if (existingSubmission) {
       return res.status(409).json({
         success: false,
         message: 'Email already registered for early access',
         data: {
           email: validatedData.email,
-          submittedAt: existingSubmission.createdAt
+          submittedAt: existingSubmission.submittedAt
         }
       });
     }
 
     // Create new submission
     const submission: EarlyAccessRecord = {
+      id: `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       ...validatedData,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const result = await collection.insertOne(submission);
+    earlyAccessSubmissions.push(submission);
 
     console.log('✅ Early access submission created:', {
-      id: result.insertedId,
+      id: submission.id,
       email: validatedData.email,
       formType: validatedData.formType,
       fullName: validatedData.fullName
@@ -59,10 +76,10 @@ export async function createEarlyAccessSubmission(req: Request, res: Response) {
       success: true,
       message: 'Early access request submitted successfully',
       data: {
-        id: result.insertedId,
+        id: submission.id,
         email: validatedData.email,
         formType: validatedData.formType,
-        submittedAt: submission.createdAt
+        submittedAt: submission.submittedAt
       }
     });
 
@@ -91,47 +108,44 @@ export async function createEarlyAccessSubmission(req: Request, res: Response) {
 // Get all early access submissions (admin endpoint)
 export async function getEarlyAccessSubmissions(req: Request, res: Response) {
   try {
-    const db = await getMongoDB();
-    
-    if (!db) {
-      throw new Error('Database connection not available');
-    }
-    
-    const collection = db.collection<EarlyAccessRecord>('early_access_submissions');
-
     const { page = 1, limit = 50, formType, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
 
-    const skip = (Number(page) - 1) * Number(limit);
-    const sort: any = {};
-    sort[sortBy as string] = sortOrder === 'desc' ? -1 : 1;
+    let filteredSubmissions = [...earlyAccessSubmissions];
 
-    const filter: any = {};
+    // Filter by form type if specified
     if (formType) {
-      filter.formType = formType;
+      filteredSubmissions = filteredSubmissions.filter(sub => sub.formType === formType);
     }
 
-    const [submissions, total] = await Promise.all([
-      collection
-        .find(filter)
-        .sort(sort)
-        .skip(skip)
-        .limit(Number(limit))
-        .toArray(),
-      collection.countDocuments(filter)
-    ]);
+    // Sort submissions
+    filteredSubmissions.sort((a, b) => {
+      const aValue = a[sortBy as string];
+      const bValue = b[sortBy as string];
+      
+      if (sortOrder === 'desc') {
+        return new Date(bValue).getTime() - new Date(aValue).getTime();
+      } else {
+        return new Date(aValue).getTime() - new Date(bValue).getTime();
+      }
+    });
+
+    // Pagination
+    const skip = (Number(page) - 1) * Number(limit);
+    const submissions = filteredSubmissions.slice(skip, skip + Number(limit));
+    const total = filteredSubmissions.length;
 
     res.json({
       success: true,
       data: {
         submissions: submissions.map(sub => ({
-          id: sub._id,
+          id: sub.id,
           fullName: sub.fullName,
           email: sub.email,
           phoneNumber: sub.phoneNumber,
           formType: sub.formType,
           walletAddress: sub.walletAddress,
           calculations: sub.calculations,
-          submittedAt: sub.createdAt,
+          submittedAt: sub.submittedAt,
           ipAddress: sub.ipAddress
         })),
         pagination: {
@@ -156,49 +170,40 @@ export async function getEarlyAccessSubmissions(req: Request, res: Response) {
 // Get submission statistics
 export async function getEarlyAccessStats(req: Request, res: Response) {
   try {
-    const db = await getMongoDB();
+    const totalSubmissions = earlyAccessSubmissions.length;
+    const savingsSubmissions = earlyAccessSubmissions.filter(sub => sub.formType === 'savings').length;
+    const investmentSubmissions = earlyAccessSubmissions.filter(sub => sub.formType === 'investment').length;
     
-    if (!db) {
-      throw new Error('Database connection not available');
-    }
-    
-    const collection = db.collection<EarlyAccessRecord>('early_access_submissions');
+    // Recent submissions (last 24 hours)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentSubmissions = earlyAccessSubmissions.filter(sub => 
+      new Date(sub.submittedAt) >= oneDayAgo
+    ).length;
 
-    const [
+    // Calculate total savings and returns
+    const totalCalculatedSavings = earlyAccessSubmissions
+      .filter(sub => sub.calculations?.totalSavings5Years)
+      .reduce((sum, sub) => sum + (sub.calculations.totalSavings5Years || 0), 0);
+
+    const totalCalculatedReturns = earlyAccessSubmissions
+      .filter(sub => sub.calculations?.totalYield5Years)
+      .reduce((sum, sub) => sum + (sub.calculations.totalYield5Years || 0), 0);
+
+    const stats = {
       totalSubmissions,
-      savingsSubmissions,
-      investmentSubmissions,
+      formTypeBreakdown: {
+        savings: savingsSubmissions,
+        investment: investmentSubmissions
+      },
       recentSubmissions,
       totalCalculatedSavings,
       totalCalculatedReturns
-    ] = await Promise.all([
-      collection.countDocuments(),
-      collection.countDocuments({ formType: 'savings' }),
-      collection.countDocuments({ formType: 'investment' }),
-      collection.countDocuments({ 
-        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
-      }),
-      collection.aggregate([
-        { $match: { 'calculations.totalSavings5Years': { $exists: true } } },
-        { $group: { _id: null, total: { $sum: '$calculations.totalSavings5Years' } } }
-      ]).toArray(),
-      collection.aggregate([
-        { $match: { 'calculations.totalYield5Years': { $exists: true } } },
-        { $group: { _id: null, total: { $sum: '$calculations.totalYield5Years' } } }
-      ]).toArray()
-    ]);
+    };
 
     res.json({
       success: true,
       data: {
-        totalSubmissions,
-        formTypeBreakdown: {
-          savings: savingsSubmissions,
-          investment: investmentSubmissions
-        },
-        recentSubmissions,
-        totalCalculatedSavings: totalCalculatedSavings[0]?.total || 0,
-        totalCalculatedReturns: totalCalculatedReturns[0]?.total || 0,
+        ...stats,
         lastUpdated: new Date()
       }
     });
@@ -219,30 +224,26 @@ export async function updateEarlyAccessSubmission(req: Request, res: Response) {
     const { id } = req.params;
     const updateData = req.body;
 
-    const db = await getMongoDB();
-    const collection = db.collection<EarlyAccessRecord>('early_access_submissions');
+    const submissionIndex = earlyAccessSubmissions.findIndex(sub => sub.id === id);
 
-    const result = await collection.updateOne(
-      { _id: id },
-      { 
-        $set: { 
-          ...updateData, 
-          updatedAt: new Date() 
-        } 
-      }
-    );
-
-    if (result.matchedCount === 0) {
+    if (submissionIndex === -1) {
       return res.status(404).json({
         success: false,
         message: 'Submission not found'
       });
     }
 
+    // Update the submission
+    earlyAccessSubmissions[submissionIndex] = {
+      ...earlyAccessSubmissions[submissionIndex],
+      ...updateData,
+      updatedAt: new Date()
+    };
+
     res.json({
       success: true,
       message: 'Submission updated successfully',
-      data: { id, updated: result.modifiedCount > 0 }
+      data: { id, updated: true }
     });
 
   } catch (error) {
@@ -260,17 +261,17 @@ export async function deleteEarlyAccessSubmission(req: Request, res: Response) {
   try {
     const { id } = req.params;
 
-    const db = await getMongoDB();
-    const collection = db.collection<EarlyAccessRecord>('early_access_submissions');
+    const submissionIndex = earlyAccessSubmissions.findIndex(sub => sub.id === id);
 
-    const result = await collection.deleteOne({ _id: id });
-
-    if (result.deletedCount === 0) {
+    if (submissionIndex === -1) {
       return res.status(404).json({
         success: false,
         message: 'Submission not found'
       });
     }
+
+    // Remove the submission
+    earlyAccessSubmissions.splice(submissionIndex, 1);
 
     res.json({
       success: true,

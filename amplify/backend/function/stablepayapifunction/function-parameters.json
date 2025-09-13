@@ -1,0 +1,13 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "storage": {
+      "stablepaydynamodb": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  }
+}

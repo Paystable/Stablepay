@@ -45,11 +45,8 @@ import { VAULT_ABI, USDC_ABI, CONTRACTS, type UserDeposit } from "../lib/vault-c
 import SendReceiveUSDC from "./send-receive-usdc";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import LockPeriodDropdown from "./lock-period-dropdown";
-import LiveExchangeCalculator from "./live-exchange-calculator";
 import DepositWithdraw from "./deposit-withdraw";
 import CopyWalletAddress from "./copy-wallet-address";
-import RiskDisclosure from "./risk-disclosure";
-import INRWithdrawalKYC from "./inr-withdrawal-kyc";
 // import { useCoinbaseOnramp } from '@coinbase/onramp-sdk';
 import { 
   Transaction,
@@ -908,7 +905,6 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-8">
-                  <INRWithdrawalKYC />
                 </CardContent>
               </Card>
 
@@ -926,7 +922,6 @@ export default function Dashboard() {
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <LiveExchangeCalculator embedded={true} />
                 </CardContent>
               </Card>
 

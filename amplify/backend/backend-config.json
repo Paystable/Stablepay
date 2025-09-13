@@ -1,0 +1,33 @@
+{
+  "backend": {
+    "api": {
+      "stablepayapi": {
+        "service": "API Gateway",
+        "providerPlugin": "awscloudformation",
+        "dependsOn": [
+          {
+            "category": "function",
+            "resourceName": "stablepayapifunction",
+            "attributes": [
+              "Name",
+              "Arn"
+            ]
+          }
+        ]
+      }
+    },
+    "function": {
+      "stablepayapifunction": {
+        "build": true,
+        "providerPlugin": "awscloudformation",
+        "service": "Lambda"
+      }
+    },
+    "storage": {
+      "stablepaydynamodb": {
+        "service": "DynamoDB",
+        "providerPlugin": "awscloudformation"
+      }
+    }
+  }
+}

@@ -1,5 +1,4 @@
 // Import environment configuration FIRST
-import './env-config';
 import crypto from 'crypto';
 
 export interface SurePassConfig {

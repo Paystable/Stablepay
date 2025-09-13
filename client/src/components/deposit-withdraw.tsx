@@ -23,8 +23,6 @@ import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Progress } from "./ui/progress";
 import { Alert, AlertDescription } from "./ui/alert";
-import YieldLockInTerms from "./yield-lockin-terms";
-import YieldLockInAlert from "./yield-lockin-alert";
 
 // StablePay vault address (fixed and non-editable)
 const STABLEPAY_VAULT_ADDRESS = "0x4bc7a35d6e09d102087ed84445137f04540a8790";
@@ -419,16 +417,7 @@ export default function DepositWithdraw() {
               </Select>
             </div>
 
-            {/* Yield Lock-In Alert */}
-            {depositAmount && selectedLockPeriod && (showLockInAlert || selectedLockPeriod !== "0") && (
-              <YieldLockInAlert
-                lockPeriod={selectedLockPeriod}
-                apy={getSelectedAPY()}
-                depositAmount={depositAmount}
-                onDismiss={() => setShowLockInAlert(false)}
-                showAlways={selectedLockPeriod !== "0"}
-              />
-            )}
+            {/* Yield Lock-In Alert - Component removed */}
 
             {/* Deposit Preview */}
             {depositAmount && (
@@ -616,15 +605,7 @@ export default function DepositWithdraw() {
           </Card>
         )}
 
-        {/* Terms and Conditions Dialog */}
-        <YieldLockInTerms
-          isOpen={showTermsDialog}
-          onAccept={handleTermsAccept}
-          onDecline={handleTermsDecline}
-          lockPeriod={selectedLockPeriod}
-          apy={getSelectedAPY()}
-          depositAmount={depositAmount}
-        />
+        {/* Terms and Conditions Dialog - Component removed */}
       </div>
     </section>
   );

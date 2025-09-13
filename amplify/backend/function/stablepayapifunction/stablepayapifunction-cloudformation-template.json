@@ -1,0 +1,114 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Lambda function for StablePay API",
+  "Parameters": {
+    "CloudWatchLogsRetentionInDays": {
+      "Type": "Number",
+      "Default": 14
+    },
+    "LambdaExecutionRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::123456789012:role/lambda-execution-role"
+    }
+  },
+  "Resources": {
+    "LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "aws:asset:path": "./src",
+        "aws:asset:property": "Code"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DeploymentBucket"
+          },
+          "S3Key": {
+            "Ref": "S3Key"
+          }
+        },
+        "Handler": "index.handler",
+        "FunctionName": {
+          "Fn::If": [
+            "ShouldNotCreateEnvResources",
+            "stablepayapifunction",
+            {
+              "Fn::Sub": [
+                "stablepayapifunction${env}",
+                {
+                  "env": {
+                    "Ref": "env"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "ENV": {
+              "Ref": "env"
+            },
+            "REGION": {
+              "Ref": "AWS::Region"
+            },
+            "STABLEPAY_DYNAMODB_TABLE": {
+              "Ref": "stablepaydynamodb"
+            }
+          }
+        },
+        "Role": {
+          "Ref": "LambdaExecutionRole"
+        },
+        "Runtime": "nodejs18.x",
+        "Layers": [],
+        "Timeout": 30
+      }
+    },
+    "LambdaFunctionVersion": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "LambdaFunction"
+        },
+        "Description": "Version 1.0.0"
+      }
+    }
+  },
+  "Outputs": {
+    "Name": {
+      "Value": {
+        "Ref": "LambdaFunction"
+      }
+    },
+    "Arn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaFunction",
+          "Arn"
+        ]
+      }
+    },
+    "Region": {
+      "Value": {
+        "Ref": "AWS::Region"
+      }
+    },
+    "LambdaExecutionRole": {
+      "Value": {
+        "Ref": "LambdaExecutionRole"
+      }
+    }
+  },
+  "Conditions": {
+    "ShouldNotCreateEnvResources": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "NONE"
+      ]
+    }
+  }
+}

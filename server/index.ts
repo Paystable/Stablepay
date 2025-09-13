@@ -1,12 +1,6 @@
-// Import centralized environment configuration
-import './env-config';
-
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import apiRoutes from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import { serveStatic as serveStaticProd, log as logProd } from "./production";
-import { connectToMongoDB } from "./mongodb";
 
 const app = express();
 app.use(express.json());
@@ -51,7 +45,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      console.log(logLine);
     }
   });
 
@@ -59,19 +53,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize MongoDB connection
-  try {
-    const mongoDb = await connectToMongoDB();
-    if (mongoDb) {
-      console.log('✅ MongoDB connection established');
-    } else {
-      console.log('🔄 Running without MongoDB - using mock data');
-    }
-  } catch (error) {
-    console.error('❌ Failed to connect to MongoDB:', error);
-    console.log('🔄 Running without MongoDB - using mock data');
-  }
-
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -82,13 +63,12 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStaticProd(app);
+  // Serve static files in production
+  if (process.env.NODE_ENV === "production") {
+    app.use(express.static('dist'));
+    app.get('*', (req, res) => {
+      res.sendFile('dist/index.html', { root: '.' });
+    });
   }
 
   const PORT = Number(process.env.PORT) || 8080;
