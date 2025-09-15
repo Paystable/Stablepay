@@ -58,7 +58,7 @@ export default function Navigation() {
             <Link href="/" className="flex items-center cursor-pointer">
               <div className="flex-shrink-0">
                 <img 
-                  src="/stablepay-logo.png" 
+                  src="/logo.png" 
                   alt="StablePay Logo" 
                   className="h-12 w-auto sm:h-14 sm:w-auto md:h-16 md:w-auto lg:h-20 lg:w-auto xl:h-24 xl:w-auto object-contain"
                 />
