@@ -56,22 +56,12 @@ export default function Navigation() {
           <div className="flex justify-between items-center h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36">
             {/* Logo */}
             <Link href="/" className="flex items-center cursor-pointer">
-              <div className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 flex items-center justify-center">
+              <div className="flex-shrink-0">
                 <img 
                   src="/stablepay-logo.png" 
                   alt="StablePay Logo" 
-                  className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 w-auto object-contain"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    const fallback = target.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
+                  className="h-12 w-auto sm:h-14 sm:w-auto md:h-16 md:w-auto lg:h-20 lg:w-auto xl:h-24 xl:w-auto object-contain"
                 />
-                <div className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 px-6 brand-gradient rounded-lg flex items-center justify-center" style={{display: 'none'}}>
-                  <Shield className="h-10 sm:h-12 md:h-14 lg:h-16 xl:h-18 w-auto text-white" />
-                  <span className="ml-3 text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">StablePay</span>
-                </div>
               </div>
             </Link>
 
