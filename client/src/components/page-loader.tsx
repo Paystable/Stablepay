@@ -54,17 +54,6 @@ export function PageLoader({
 
   const content = (
     <div className="flex flex-col items-center justify-center space-y-6">
-      {/* Logo Animation */}
-      <div className="relative">
-        <div className="w-24 h-24 flex items-center justify-center animate-pulse">
-          <img 
-            src="/logo.png" 
-            alt="StablePay Logo" 
-            className="w-20 h-auto object-contain animate-spin"
-          />
-        </div>
-        <div className="absolute -inset-2 bg-gradient-to-r from-[#6A5ACD] to-[#8B87E8] rounded-full opacity-20 animate-ping" />
-      </div>
 
       {/* Loading Message */}
       <div className="text-center space-y-2">
@@ -89,27 +78,6 @@ export function PageLoader({
         </div>
       </div>
 
-      {/* Feature Highlights */}
-      <div className="grid grid-cols-3 gap-4 text-center max-w-md">
-        <div className="space-y-1">
-          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-            <span className="text-green-600 text-sm">✓</span>
-          </div>
-          <p className="text-xs text-gray-600">Secure</p>
-        </div>
-        <div className="space-y-1">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-            <span className="text-blue-600 text-sm">⚡</span>
-          </div>
-          <p className="text-xs text-gray-600">Fast</p>
-        </div>
-        <div className="space-y-1">
-          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-            <span className="text-purple-600 text-sm">💰</span>
-          </div>
-          <p className="text-xs text-gray-600">Profitable</p>
-        </div>
-      </div>
     </div>
   )
 
