@@ -3,6 +3,7 @@
 
 import * as React from "react"
 import { LoadingBar } from "@/components/ui/loading-bar"
+import { LoadingLogo } from "@/components/loading-logo"
 import { cn } from "@/lib/utils"
 
 interface PageLoaderProps {
@@ -56,15 +57,15 @@ export function PageLoader({
     <div className="flex flex-col items-center justify-center space-y-6">
       {/* Logo Animation */}
       <div className="relative">
-        <div className="w-16 h-16 bg-[#6667AB] rounded-2xl flex items-center justify-center animate-pulse shadow-lg">
-          <span className="text-white font-bold text-xl">SP</span>
+        <div className="w-20 h-20 flex items-center justify-center animate-pulse">
+          <LoadingLogo size={80} className="animate-spin" />
         </div>
-        <div className="absolute -inset-2 bg-gradient-to-r from-[#6667AB] to-[#8B87E8] rounded-2xl opacity-20 animate-ping" />
+        <div className="absolute -inset-2 bg-gradient-to-r from-[#6A5ACD] to-[#8B87E8] rounded-full opacity-20 animate-ping" />
       </div>
 
       {/* Loading Message */}
       <div className="text-center space-y-2">
-        <h3 className="text-lg font-semibold text-[#6667AB]">
+        <h3 className="text-lg font-semibold text-[#6A5ACD]">
           {message}{dots}
         </h3>
         <p className="text-sm text-gray-600">
