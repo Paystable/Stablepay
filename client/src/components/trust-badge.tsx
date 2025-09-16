@@ -40,7 +40,7 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
             <div className="flex flex-col items-center space-y-2">
               <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 p-3">
                 <img 
-                  src="/logos/coinbase-logo.png" 
+                  src="/logos/coinbase-logo.svg" 
                   alt="Coinbase" 
                   className="w-full h-full object-contain"
                 />
@@ -52,7 +52,7 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
             <div className="flex flex-col items-center space-y-2">
               <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 p-3">
                 <img 
-                  src="/logos/circle-logo.png" 
+                  src="/logos/circle-logo.jpg" 
                   alt="Circle" 
                   className="w-full h-full object-contain"
                 />
