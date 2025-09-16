@@ -122,6 +122,26 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                 <div className="text-xs text-gray-600">Government of India</div>
               </div>
             </div>
+
+            {/* FinCEN - U.S. Treasury */}
+            <div className="flex flex-col items-center space-y-2">
+              <a 
+                href="https://www.fincen.gov" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 p-3 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+              >
+                <img 
+                  src="/logos/fincen-logo.png" 
+                  alt="Financial Crimes Enforcement Network, U.S. Treasury" 
+                  className="w-full h-full object-contain"
+                />
+              </a>
+              <div className="text-center">
+                <div className="text-xs font-medium text-gray-700">Financial Crimes Enforcement Network</div>
+                <div className="text-xs text-gray-600">U.S. Treasury</div>
+              </div>
+            </div>
           </div>
         </div>
 
