@@ -461,7 +461,7 @@ export default function EarlyAccess() {
             </h1>
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl brand-text max-w-4xl mx-auto mb-6 sm:mb-8 md:mb-10 no-blur leading-relaxed px-2">
               Be among the first to experience zero-fee remittances and up to 14% APY returns. 
-              Join 1,000+ NRIs already saving thousands annually.
+              Built on Base blockchain with regulatory compliance and institutional-grade security.
             </p>
 
           </div>
