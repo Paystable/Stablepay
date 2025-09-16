@@ -4,8 +4,6 @@ import Providers from "@/components/providers";
 import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import PWAInstall from "@/components/pwa-install";
 import { Toaster } from "@/components/ui/toaster";
-import { PageLoader } from "@/components/page-loader";
-import { useLoading } from "@/hooks/use-loading";
 import { useGlobalLoader } from "@/hooks/useGlobalLoader";
 import WithGlobalLoader from "@/components/withGlobalLoader";
 
@@ -31,47 +29,10 @@ const preloadPages = () => {
 
 function AppContent() {
   const [location] = useLocation();
-  const { isLoading, progress, message, startLoading, updateProgress, finishLoading } = useLoading();
   const { showLoader, hideLoader } = useGlobalLoader();
 
   useEffect(() => {
     // Show global loader on route changes
-    showLoader();
-    
-    // Simulate initial app loading
-    startLoading("Initializing StablePay...");
-    
-    const loadingSteps = [
-      { progress: 20, message: "Loading blockchain connections..." },
-      { progress: 40, message: "Securing your session..." },
-      { progress: 60, message: "Fetching market data..." },
-      { progress: 80, message: "Preparing interface..." },
-      { progress: 100, message: "Ready!" }
-    ];
-
-    let stepIndex = 0;
-    const interval = setInterval(() => {
-      if (stepIndex < loadingSteps.length) {
-        const step = loadingSteps[stepIndex];
-        updateProgress(step.progress, step.message);
-        stepIndex++;
-      } else {
-        finishLoading();
-        clearInterval(interval);
-        // Hide global loader after app is ready
-        setTimeout(() => {
-          hideLoader();
-        }, 500);
-        // Start preloading critical pages
-        preloadPages();
-      }
-    }, 300);
-
-    return () => clearInterval(interval);
-  }, [showLoader, hideLoader]);
-
-  // Show global loader on route changes
-  useEffect(() => {
     showLoader();
     const timer = setTimeout(() => {
       hideLoader();
@@ -80,37 +41,14 @@ function AppContent() {
     return () => clearTimeout(timer);
   }, [location, showLoader, hideLoader]);
 
-  // Page-specific loading messages
-  const getPageLoadingMessage = (path: string) => {
-    switch (path) {
-      case "/dashboard": return "Loading your portfolio...";
-      case "/p2p": return "Connecting to P2P network...";
-      case "/investors": return "Loading investor information...";
-      case "/kyc": return "Loading KYC verification...";
-      case "/travel-rule": return "Loading compliance forms...";
-      case "/early-access": return "Loading early access forms...";
-      case "/admin-early-access": return "Loading admin dashboard...";
-      default: return "Loading StablePay...";
-    }
-  };
-
   return (
     <div className="min-h-screen">
-      <PageLoader 
-        isLoading={isLoading} 
-        progress={progress} 
-        message={message}
-        variant="rainbow"
-      />
-      
-      <Suspense fallback={
-        <PageLoader 
-          isLoading={true} 
-          progress={75} 
-          message={getPageLoadingMessage(location)}
-          variant="default"
-        />
-      }>
+      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6A5ACD] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>}>
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/dashboard" component={DashboardPage} />
