@@ -31,7 +31,14 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                   src="/logos/base-logo.png" 
                   alt="Base" 
                   className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
                 />
+                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500" style={{display: 'none'}}>
+                  Base
+                </div>
               </div>
               <span className="text-xs font-medium text-gray-700">Base</span>
             </div>
@@ -43,7 +50,14 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                   src="/logos/coinbase-logo.png" 
                   alt="Coinbase" 
                   className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
                 />
+                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500" style={{display: 'none'}}>
+                  Coinbase
+                </div>
               </div>
               <span className="text-xs font-medium text-gray-700">Coinbase</span>
             </div>
@@ -55,7 +69,14 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                   src="/logos/circle-logo.png" 
                   alt="Circle" 
                   className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
                 />
+                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500" style={{display: 'none'}}>
+                  Circle
+                </div>
               </div>
               <span className="text-xs font-medium text-gray-700">Circle</span>
             </div>
@@ -75,7 +96,14 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                   src="/logos/gujarat-logo.png" 
                   alt="Industries Commissionerate, Government of Gujarat" 
                   className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
                 />
+                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500" style={{display: 'none'}}>
+                  Gujarat
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-xs font-medium text-gray-700">Industries Commissionerate</div>
@@ -90,7 +118,14 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                   src="/logos/fiu-india-logo.png" 
                   alt="Financial Intelligence Unit, Government of India" 
                   className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
                 />
+                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500" style={{display: 'none'}}>
+                  FIU India
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-xs font-medium text-gray-700">Financial Intelligence Unit</div>
