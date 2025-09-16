@@ -4,7 +4,6 @@ import Providers from "@/components/providers";
 import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import PWAInstall from "@/components/pwa-install";
 import { Toaster } from "@/components/ui/toaster";
-import BrandLoader from "@/components/brand-loader";
 
 // Lazy load pages for better performance with preloading
 const HomePage = lazy(() => import("@/pages/home"));
@@ -31,7 +30,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<BrandLoader message="Loading StablePay..." />}>
+      <Suspense fallback={null}>
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/dashboard" component={DashboardPage} />
