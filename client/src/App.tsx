@@ -4,8 +4,7 @@ import Providers from "@/components/providers";
 import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import PWAInstall from "@/components/pwa-install";
 import { Toaster } from "@/components/ui/toaster";
-import { useGlobalLoader } from "@/hooks/useGlobalLoader";
-import WithGlobalLoader from "@/components/withGlobalLoader";
+import BrandLoader from "@/components/brand-loader";
 
 // Lazy load pages for better performance with preloading
 const HomePage = lazy(() => import("@/pages/home"));
@@ -29,26 +28,10 @@ const preloadPages = () => {
 
 function AppContent() {
   const [location] = useLocation();
-  const { showLoader, hideLoader } = useGlobalLoader();
-
-  useEffect(() => {
-    // Show global loader on route changes
-    showLoader();
-    const timer = setTimeout(() => {
-      hideLoader();
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, [location, showLoader, hideLoader]);
 
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6A5ACD] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>}>
+      <Suspense fallback={<BrandLoader message="Loading StablePay..." />}>
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/dashboard" component={DashboardPage} />
@@ -70,12 +53,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <WithGlobalLoader showOnMount={true} hideOnMount={true} delay={1000}>
-      <Providers>
-        <GoogleAnalyticsProvider>
-          <AppContent />
-        </GoogleAnalyticsProvider>
-      </Providers>
-    </WithGlobalLoader>
+    <Providers>
+      <GoogleAnalyticsProvider>
+        <AppContent />
+      </GoogleAnalyticsProvider>
+    </Providers>
   );
 }
