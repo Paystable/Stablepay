@@ -8,8 +8,7 @@ export const config = createConfig({
   connectors: [
     coinbaseWallet({
       appName: 'Stable Pay',
-      appLogoUrl: 'https://stablepay.global/logo.png',
-      preference: 'smartWalletOnly',
+    appLogoUrl: window.location.origin + '/stablepay-logo.png',
       reloadOnDisconnect: false,
     }),
     injected()

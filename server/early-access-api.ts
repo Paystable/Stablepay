@@ -10,11 +10,26 @@ const EarlyAccessFormSchema = z.object({
     errorMap: () => ({ message: 'Form type must be either savings or investment' })
   }),
   walletAddress: z.string().optional(),
+  // Financial fields
+  monthlyRemittance: z.number().min(0).optional(),
+  investmentAmount: z.number().min(0).optional(),
+  currentService: z.string().optional(),
+  lockPeriod: z.string().optional(),
+  riskTolerance: z.string().optional(),
+  primaryGoal: z.string().optional(),
+  referralSource: z.string().optional(),
+  // Calculations
   calculations: z.object({
     monthlyAmount: z.number().min(0),
     totalSavings5Years: z.number().min(0),
     totalYield5Years: z.number().min(0),
-    apy: z.number().min(0)
+    apy: z.number().min(0),
+    // Additional calculation fields
+    annualSavings: z.number().min(0).optional(),
+    monthlySavings: z.number().min(0).optional(),
+    projectedYield: z.number().min(0).optional(),
+    annualYield: z.number().min(0).optional(),
+    combinedBenefit: z.number().min(0).optional()
   }).optional(),
   submittedAt: z.date(),
   ipAddress: z.string().optional(),
@@ -144,6 +159,15 @@ export async function getEarlyAccessSubmissions(req: Request, res: Response) {
           phoneNumber: sub.phoneNumber,
           formType: sub.formType,
           walletAddress: sub.walletAddress,
+          // Financial fields
+          monthlyRemittance: sub.monthlyRemittance,
+          investmentAmount: sub.investmentAmount,
+          currentService: sub.currentService,
+          lockPeriod: sub.lockPeriod,
+          riskTolerance: sub.riskTolerance,
+          primaryGoal: sub.primaryGoal,
+          referralSource: sub.referralSource,
+          // Calculations
           calculations: sub.calculations,
           submittedAt: sub.submittedAt,
           ipAddress: sub.ipAddress

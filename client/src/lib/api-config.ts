@@ -1,7 +1,10 @@
 // API Configuration for AWS Amplify deployment
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? process.env.REACT_APP_API_URL || 'https://zz0i3vbr6b.execute-api.us-east-1.amazonaws.com/prod'
-  : 'http://localhost:8080';
+  : 'http://localhost:3000';
+
+// HTTPS Static Server URL for production
+const STATIC_SERVER_URL = 'https://7ywcv0e6u6.execute-api.us-east-1.amazonaws.com/prod';
 
 export const API_ENDPOINTS = {
   EARLY_ACCESS: {

@@ -1,8 +1,8 @@
 
 {
-  "name": "Stable Pay - USDC Arbitrage Vault",
+  "name": "StablePay - Global Passport of Your Money",
   "short_name": "StablePay",
-  "description": "Earn 12% APY with our regulated USDC arbitrage vault on Base network",
+  "description": "Global Passport of Your Money",
   "theme_color": "#6667AB",
   "background_color": "#FAF9F6",
   "display": "standalone",
@@ -11,13 +11,13 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "/stablepay-logo_192.png",
+      "src": "/stablepay-logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/stablepay-logo_512.png",
+      "src": "/stablepay-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"

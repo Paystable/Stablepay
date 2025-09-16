@@ -313,7 +313,7 @@ export default function FinanceCalculator() {
                   </div>
                   <div className="flex items-center gap-2 text-[#6667AB]">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>FIU(Financial Intelligence Unit)-India Registered platform</span>
+                    <span>Financial Intelligence Unit-India Registered platform</span>
                   </div>
                   <div className="flex items-center gap-2 text-[#6667AB]">
                     <CheckCircle className="w-4 h-4 text-green-600" />

@@ -193,7 +193,7 @@ export default function TargetAudiences() {
             <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-[#6667AB]">
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4" />
-                <span className="font-medium no-blur">FIU(Financial Intelligence Unit)-India Registered</span>
+                <span className="font-medium no-blur">Financial Intelligence Unit-India Registered</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4" />

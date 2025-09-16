@@ -6,11 +6,26 @@ export interface EarlyAccessSubmission {
   phoneNumber: string;
   formType: 'savings' | 'investment';
   walletAddress?: string;
+  // Financial fields
+  monthlyRemittance?: number;
+  investmentAmount?: number;
+  currentService?: string;
+  lockPeriod?: string;
+  riskTolerance?: string;
+  primaryGoal?: string;
+  referralSource?: string;
+  // Calculations
   calculations?: {
     monthlyAmount: number;
     totalSavings5Years: number;
     totalYield5Years: number;
     apy: number;
+    // Additional calculation fields
+    annualSavings?: number;
+    monthlySavings?: number;
+    projectedYield?: number;
+    annualYield?: number;
+    combinedBenefit?: number;
   };
 }
 
@@ -35,6 +50,15 @@ export interface EarlyAccessSubmissionsResponse {
       phoneNumber: string;
       formType: string;
       walletAddress: string;
+      // Financial fields
+      monthlyRemittance?: number;
+      investmentAmount?: number;
+      currentService?: string;
+      lockPeriod?: string;
+      riskTolerance?: string;
+      primaryGoal?: string;
+      referralSource?: string;
+      // Calculations
       calculations: any;
       submittedAt: string;
       ipAddress: string;

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useLocation } from 'wouter';
 import { useEffect, useState } from 'react';
+import { useGoogleAnalyticsContext } from './google-analytics-provider';
 
 export default function WalletConnection() {
   const { address, isConnected, isConnecting } = useAccount();
@@ -15,17 +16,19 @@ export default function WalletConnection() {
   const [location, navigate] = useLocation();
   const [showTravelRuleCompliance, setShowTravelRuleCompliance] = useState(false);
   const [isNewWallet, setIsNewWallet] = useState(false);
+  const { trackWalletConnection, trackEngagement } = useGoogleAnalyticsContext();
 
   // Check if wallet is new and handle Travel Rule compliance
   useEffect(() => {
     if (isConnected && address) {
+      trackWalletConnection('coinbase', true);
       checkIfNewWallet();
     } else {
       // Reset states when disconnected
       setIsNewWallet(false);
       setShowTravelRuleCompliance(false);
     }
-  }, [isConnected, address]);
+  }, [isConnected, address, trackWalletConnection]);
 
   const checkIfNewWallet = async () => {
     if (!address) return;
@@ -55,6 +58,11 @@ export default function WalletConnection() {
 
   const handleConnect = async () => {
     try {
+      trackEngagement('wallet_connect_attempt', {
+        wallet_type: 'coinbase',
+        page: location,
+      });
+      
       connect({
         connector: coinbaseWallet({
           appName: 'StablePay',
@@ -63,6 +71,7 @@ export default function WalletConnection() {
       });
     } catch (error) {
       console.error('Connection failed:', error);
+      trackWalletConnection('coinbase', false, error instanceof Error ? error.message : 'Unknown error');
     }
   };
 
@@ -112,6 +121,10 @@ export default function WalletConnection() {
     return (
       <Button
         onClick={() => {
+          trackEngagement('wallet_disconnect', {
+            wallet_address: address,
+            page: location,
+          });
           disconnect();
           navigate('/');
         }}

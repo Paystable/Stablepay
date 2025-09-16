@@ -64,7 +64,7 @@ export default function Features() {
     },
     {
       icon: Shield,
-      title: "FIU(Financial Intelligence Unit)-India Registered",
+      title: "Financial Intelligence Unit-India Registered",
       subtitle: "Fully Compliant & Secure",
       description: "Licensed and monitored by Financial Intelligence Unit of India. Self-custodial smart contracts ensure your funds remain in your control.",
       highlights: ["Government Registered", "Self-Custodial", "Full Transparency"],

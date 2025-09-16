@@ -31,11 +31,33 @@ const isValidPhone = (phone) => {
   return phoneRegex.test(phone);
 };
 
+// Helper function to validate wallet address
+const isValidWalletAddress = (address) => {
+  // Ethereum address validation (42 characters, starts with 0x, followed by 40 hex characters)
+  const addressRegex = /^0x[a-fA-F0-9]{40}$/;
+  return addressRegex.test(address);
+};
+
 // Create early access submission
 const createEarlyAccessSubmission = async (event) => {
   try {
     const body = JSON.parse(event.body);
-    const { fullName, email, phoneNumber, formType, walletAddress, calculations } = body;
+    const { 
+      fullName, 
+      email, 
+      phoneNumber, 
+      formType, 
+      walletAddress, 
+      calculations,
+      // Financial fields
+      monthlyRemittance,
+      investmentAmount,
+      currentService,
+      lockPeriod,
+      riskTolerance,
+      primaryGoal,
+      referralSource
+    } = body;
 
     // Validation
     if (!fullName || !email || !phoneNumber || !formType) {
@@ -66,6 +88,16 @@ const createEarlyAccessSubmission = async (event) => {
       });
     }
 
+    // Validate wallet address if provided
+    if (walletAddress && walletAddress !== '') {
+      if (!isValidWalletAddress(walletAddress)) {
+        return createResponse(400, {
+          success: false,
+          message: 'Invalid wallet address format'
+        });
+      }
+    }
+
     // Check if email already exists
     const existingSubmission = await dynamodb.get({
       TableName: TABLE_NAME,
@@ -91,6 +123,15 @@ const createEarlyAccessSubmission = async (event) => {
       phoneNumber,
       formType,
       walletAddress: walletAddress || '',
+      // Financial fields
+      monthlyRemittance: monthlyRemittance || null,
+      investmentAmount: investmentAmount || null,
+      currentService: currentService || null,
+      lockPeriod: lockPeriod || null,
+      riskTolerance: riskTolerance || null,
+      primaryGoal: primaryGoal || null,
+      referralSource: referralSource || null,
+      // Calculations
       calculations: calculations || {},
       submittedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
@@ -111,6 +152,7 @@ const createEarlyAccessSubmission = async (event) => {
         id: submission.id,
         email: submission.email,
         formType: submission.formType,
+        walletAddress: submission.walletAddress,
         submittedAt: submission.submittedAt
       }
     });
@@ -171,6 +213,15 @@ const getEarlyAccessSubmissions = async (event) => {
           phoneNumber: sub.phoneNumber,
           formType: sub.formType,
           walletAddress: sub.walletAddress,
+          // Financial fields
+          monthlyRemittance: sub.monthlyRemittance,
+          investmentAmount: sub.investmentAmount,
+          currentService: sub.currentService,
+          lockPeriod: sub.lockPeriod,
+          riskTolerance: sub.riskTolerance,
+          primaryGoal: sub.primaryGoal,
+          referralSource: sub.referralSource,
+          // Calculations
           calculations: sub.calculations,
           submittedAt: sub.submittedAt,
           ipAddress: sub.ipAddress
@@ -253,14 +304,21 @@ const updateEarlyAccessSubmission = async (event) => {
     const result = await dynamodb.update({
       TableName: TABLE_NAME,
       Key: { email: id }, // Using email as key since it's unique
-      UpdateExpression: 'SET #updatedAt = :updatedAt, #fullName = :fullName, #phoneNumber = :phoneNumber, #formType = :formType, #walletAddress = :walletAddress, #calculations = :calculations',
+      UpdateExpression: 'SET #updatedAt = :updatedAt, #fullName = :fullName, #phoneNumber = :phoneNumber, #formType = :formType, #walletAddress = :walletAddress, #calculations = :calculations, #monthlyRemittance = :monthlyRemittance, #investmentAmount = :investmentAmount, #currentService = :currentService, #lockPeriod = :lockPeriod, #riskTolerance = :riskTolerance, #primaryGoal = :primaryGoal, #referralSource = :referralSource',
       ExpressionAttributeNames: {
         '#updatedAt': 'updatedAt',
         '#fullName': 'fullName',
         '#phoneNumber': 'phoneNumber',
         '#formType': 'formType',
         '#walletAddress': 'walletAddress',
-        '#calculations': 'calculations'
+        '#calculations': 'calculations',
+        '#monthlyRemittance': 'monthlyRemittance',
+        '#investmentAmount': 'investmentAmount',
+        '#currentService': 'currentService',
+        '#lockPeriod': 'lockPeriod',
+        '#riskTolerance': 'riskTolerance',
+        '#primaryGoal': 'primaryGoal',
+        '#referralSource': 'referralSource'
       },
       ExpressionAttributeValues: {
         ':updatedAt': new Date().toISOString(),
@@ -268,7 +326,14 @@ const updateEarlyAccessSubmission = async (event) => {
         ':phoneNumber': body.phoneNumber,
         ':formType': body.formType,
         ':walletAddress': body.walletAddress || '',
-        ':calculations': body.calculations || {}
+        ':calculations': body.calculations || {},
+        ':monthlyRemittance': body.monthlyRemittance || null,
+        ':investmentAmount': body.investmentAmount || null,
+        ':currentService': body.currentService || null,
+        ':lockPeriod': body.lockPeriod || null,
+        ':riskTolerance': body.riskTolerance || null,
+        ':primaryGoal': body.primaryGoal || null,
+        ':referralSource': body.referralSource || null
       },
       ReturnValues: 'ALL_NEW'
     }).promise();
