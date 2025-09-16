@@ -9,11 +9,11 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
     <div className={`bg-gradient-to-br from-[#6A5ACD]/10 to-[#9370DB]/10 backdrop-blur-sm border border-[#6A5ACD]/20 rounded-2xl p-6 shadow-lg ${className}`}>
       <div className="text-center space-y-6">
         {/* Header */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-[#6A5ACD]">
+        <div className="space-y-3">
+          <h3 className="text-2xl font-bold text-[#6A5ACD]">
             Trusted & Verified
           </h3>
-          <p className="text-sm text-gray-700">
+          <p className="text-base text-gray-700">
             Partnered with industry leaders and registered with regulatory authorities
           </p>
         </div>
@@ -100,23 +100,6 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
           </div>
         </div>
 
-        {/* Trust Indicators */}
-        <div className="pt-4 border-t border-[#6A5ACD]/20">
-          <div className="flex flex-wrap justify-center items-center gap-6 text-xs text-gray-600">
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-[#6A5ACD] rounded-full"></div>
-              <span>Regulated</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-[#9370DB] rounded-full"></div>
-              <span>Compliant</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-[#6A5ACD] rounded-full"></div>
-              <span>Verified</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
