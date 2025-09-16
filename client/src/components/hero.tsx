@@ -47,7 +47,7 @@ const Hero = memo(function Hero() {
           {/* Left Content */}
           <div className="space-y-4 sm:space-y-6 md:space-y-8">
             <div className="space-y-3 sm:space-y-4 md:space-y-6">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold text-black leading-tight no-blur px-1">
+              <h1 className="text-5xl sm:text-6xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-black leading-tight no-blur px-1">
                 <span className="block sm:inline">Send Money Smarter.</span>{" "}
                 <span className="brand-text block sm:inline mt-1 sm:mt-0">Earn While You Transfer.</span>
               </h1>
