@@ -132,7 +132,7 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
                 className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 p-3 hover:shadow-md transition-shadow duration-200 cursor-pointer"
               >
                 <img 
-                  src="/logos/fincen-logo.png" 
+                  src="/logos/FinCEN.png" 
                   alt="Financial Crimes Enforcement Network, U.S. Treasury" 
                   className="w-full h-full object-contain"
                 />
