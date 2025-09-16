@@ -60,7 +60,7 @@ export default function Navigation() {
                 <img 
                   src="/logo.png" 
                   alt="StablePay Logo" 
-                  className="h-16 w-auto sm:h-20 sm:w-auto md:h-24 md:w-auto lg:h-28 lg:w-auto xl:h-32 xl:w-auto object-contain"
+                  className="h-20 w-auto sm:h-24 sm:w-auto md:h-28 md:w-auto lg:h-32 lg:w-auto xl:h-36 xl:w-auto object-contain"
                 />
               </div>
             </Link>
