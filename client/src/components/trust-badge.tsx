@@ -83,26 +83,6 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
             Regulatory Compliance
           </h4>
           <div className="flex flex-wrap justify-center items-center gap-8">
-            {/* Gujarat Industries Commissionerate */}
-            <div className="flex flex-col items-center space-y-2">
-              <a 
-                href="https://ic.gujarat.gov.in" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 p-3 hover:shadow-md transition-shadow duration-200 cursor-pointer"
-              >
-                <img 
-                  src="/logos/gujarat-logo.png" 
-                  alt="Industries Commissionerate, Government of Gujarat" 
-                  className="w-full h-full object-contain"
-                />
-              </a>
-              <div className="text-center">
-                <div className="text-xs font-medium text-gray-700">Industries Commissionerate</div>
-                <div className="text-xs text-gray-600">Government of Gujarat</div>
-              </div>
-            </div>
-
             {/* Financial Intelligence Unit - India */}
             <div className="flex flex-col items-center space-y-2">
               <a 
@@ -140,6 +120,26 @@ export function TrustBadge({ className = "" }: TrustBadgeProps) {
               <div className="text-center">
                 <div className="text-xs font-medium text-gray-700">Financial Crimes Enforcement Network</div>
                 <div className="text-xs text-gray-600">U.S. Treasury</div>
+              </div>
+            </div>
+
+            {/* Gujarat Industries Commissionerate */}
+            <div className="flex flex-col items-center space-y-2">
+              <a 
+                href="https://ic.gujarat.gov.in" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 p-3 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+              >
+                <img 
+                  src="/logos/gujarat-logo.png" 
+                  alt="Industries Commissionerate, Government of Gujarat" 
+                  className="w-full h-full object-contain"
+                />
+              </a>
+              <div className="text-center">
+                <div className="text-xs font-medium text-gray-700">Industries Commissionerate</div>
+                <div className="text-xs text-gray-600">Government of Gujarat</div>
               </div>
             </div>
           </div>
