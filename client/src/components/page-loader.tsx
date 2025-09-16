@@ -3,7 +3,6 @@
 
 import * as React from "react"
 import { LoadingBar } from "@/components/ui/loading-bar"
-import { LoadingLogo } from "@/components/loading-logo"
 import { cn } from "@/lib/utils"
 
 interface PageLoaderProps {
@@ -57,8 +56,12 @@ export function PageLoader({
     <div className="flex flex-col items-center justify-center space-y-6">
       {/* Logo Animation */}
       <div className="relative">
-        <div className="w-20 h-20 flex items-center justify-center animate-pulse">
-          <LoadingLogo size={80} className="animate-spin" />
+        <div className="w-24 h-24 flex items-center justify-center animate-pulse">
+          <img 
+            src="/logo.png" 
+            alt="StablePay Logo" 
+            className="w-20 h-auto object-contain animate-spin"
+          />
         </div>
         <div className="absolute -inset-2 bg-gradient-to-r from-[#6A5ACD] to-[#8B87E8] rounded-full opacity-20 animate-ping" />
       </div>
